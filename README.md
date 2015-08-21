@@ -20,7 +20,7 @@ For it all to work, it requires:
 2. Add `orc init` to your shell to enable shims and autocompletion.
 
     ~~~ sh
-    $ echo 'eval "$(orc init -)"' >> ~/.bash_profile
+    $ echo 'eval "$(~/.orc/bin/orc init -)"' >> ~/.bash_profile
     ~~~
 
     _Use `~/.bashrc` on Ubuntu, or `~/.zshrc` for Zsh._
