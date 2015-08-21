@@ -3,6 +3,7 @@
 This is a script to emulate some of pow's functionality on linux.
 
 For it all to work, it requires:
+
 1. A functional nginx installation
 2. A functional dnsmasq installation
 3. An app that runs on unicorns
