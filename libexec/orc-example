@@ -33,4 +33,8 @@ server {
   }
 }
 
+Also, install dnsmasq and run this to redirect *.dev to localhost:
+
+  echo "address=/.dev/127.0.0.1" > /etc/dnsmasq.d/orc
+
 EOF
