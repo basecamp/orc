@@ -13,7 +13,7 @@ server {
   listen 127.0.0.1:80;
   server_name ~^(.*\.)?(.*)\.(dev|test);
   set $app_dir $2;
-  root /home/<your username>/.apps/$app_dir/current/public;
+  root /home/<your username>/.apps/$app_dir/public;
 
 
   error_page 404 /404.html;
