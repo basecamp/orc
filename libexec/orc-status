@@ -3,6 +3,12 @@
 # Summary: Shows running apps
 # Help: Lists running unicorn apps!
 
+if [ "$1" == "--short" ]; then
+  #shellcheck disable=SC2009
+  ps -efa|grep 'unicorn master'|grep -v grep|awk -F'/tmp/unicorn.' '{print $2}'|awk -F. '{print $1}'
+  exit 0
+fi
+
 pid_lines=$(ps auwx | grep "unicorn master" | grep -v grep)
 OLDIFS=$IFS
 IFS=$'\n'

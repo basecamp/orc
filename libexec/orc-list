@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+# Usage: orc list
+# Summary: Lists available apps
+# Help: Lists apps available to start
+
+ls -1 $ORC_APPS

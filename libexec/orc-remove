@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+# Usage: orc remove app
+# Summary: Removes an app from orc
+# Help: Removes the link to the app from the orc directory
+
+if [ -h "$ORC_APPS/$1" ]; then
+  rm "$ORC_APPS/$1"
+fi

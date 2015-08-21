@@ -1,21 +1,22 @@
 #!/usr/bin/env bash
-# Usage: orc stop <app>
-# Summary: Stops <app>
-# Help: Be sure to provide an app to stop!
+# Usage: orc stop <app> | orc stop all
+# Summary: Stops running apps
+# Help: Stops the given <app> or all apps if given 'all'
+
+# Provide orc completions
+if [ "$1" == "--complete" ]; then
+  echo 'all'
+  exec orc-status --short
+fi
 
 stop_app(){
-  echo "Stopping $1!"
+  echo "Stopping $1"
   pkill -f "/tmp/unicorn.$1.sock"
-}
-
-list_apps(){
-  #shellcheck disable=SC2009
-  ps -efa|grep 'unicorn master'|grep -v grep|awk -F'/tmp/unicorn.' '{print $2}'|awk -F. '{print $1}'
 }
 
 case "$1" in
   all)
-    for app in $(list_apps)
+    for app in $(orc status --short)
     do
       stop_app "$app"
     done

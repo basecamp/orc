@@ -1,13 +1,29 @@
 #!/usr/bin/env bash
-# Usage: orc start <app>
-# Summary: Starts <app>
+# Usage: orc start <app> [<another-app> <or> <two>]
+# Summary: Starts up an app
 # Help: Be sure to provide an app to start!
 
-if [[ $1 ]]; then
-  cd "$ORC_APPS/$1"
-  # piggyback on pow.cx's env file
-  if [ -f ".powenv" ]; then
-    . .powenv
-  fi
-  nohup  bin/unicorn config.ru -l "/tmp/unicorn.$1.sock" -D >> /tmp/orc.log &
+# Provide orc completions
+if [ "$1" == "--complete" ]; then
+  exec orc-list
 fi
+
+start_app(){
+  if [ -e "$ORC_APPS/$1" ]; then
+    echo "Starting $1"
+    cd "$ORC_APPS/$1"
+    # piggyback on pow.cx's env file
+    if [ -f ".powenv" ]; then
+      . .powenv
+    fi
+    nohup  bin/unicorn config.ru -l "/tmp/unicorn.$1.sock" -D >> /tmp/orc.log 2>&1 &
+  else
+    echo "$1 isn't a valid app!"
+    exit 1
+  fi
+}
+
+for app in "$@"
+do
+  start_app "$app"
+done

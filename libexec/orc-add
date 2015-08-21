@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+# Usage: orc add /path/to/app
+# Summary: Links an app into orc
+# Help: Creates a link from the app into the orc directory
+
+if [ -d "$1" ]; then
+  appname=$(basename "$1")
+  ln -s "$1" "$ORC_APPS/$appname"
+fi

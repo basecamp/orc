@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+# Usage: orc restart <app>
+# Summary: Restarts a running app
+# Help: Restarts the given app
+
+# Provide orc completions
+if [ "$1" == "--complete" ]; then
+  exec orc-status --short
+fi
+
+orc-stop "$1" && orc-start "$1"
