@@ -3,4 +3,9 @@
 # Summary: Lists available apps
 # Help: Lists apps available to start
 
+if [ "$1" == "--without-running" ]; then
+  ls -1 $ORC_APPS | grep -v -f <(orc-status --short)
+  exit 0
+fi
+
 ls -1 $ORC_APPS

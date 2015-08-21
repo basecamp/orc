@@ -5,7 +5,7 @@
 
 # Provide orc completions
 if [ "$1" == "--complete" ]; then
-  exec orc-list
+  exec orc-list --without-running
 fi
 
 start_app(){
