@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+# Usage: orc start <app>
+# Summary: Starts <app>
+# Help: Be sure to provide an app to start!
+
+if [[ $1 ]]; then
+  cd "$ORC_APPS/$1"
+  # piggyback on pow.cx's env file
+  if [ -f ".powenv" ]; then
+    . .powenv
+  fi
+  nohup  bin/unicorn config.ru -l "/tmp/unicorn.$1.sock" -D >> /tmp/orc.log &
+fi

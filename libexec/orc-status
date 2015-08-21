@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+# Usage: orc status
+# Summary: Shows running apps
+# Help: Lists running unicorn apps!
+
+pid_lines=$(ps auwx | grep "unicorn master" | grep -v grep)
+OLDIFS=$IFS
+IFS=$'\n'
+for line in $pid_lines
+do
+  name=$(echo "$line"|awk -F'/tmp/unicorn.' '{print $2}'|awk -F. '{print $1}')
+  pid=$(echo "$line"|awk '{print $2}')
+  echo "$name: $pid"
+done
+IFS=$OLDIFS

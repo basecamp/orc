@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+# Usage: orc stop <app>
+# Summary: Stops <app>
+# Help: Be sure to provide an app to stop!
+
+stop_app(){
+  echo "Stopping $1!"
+  pkill -f "/tmp/unicorn.$1.sock"
+}
+
+list_apps(){
+  #shellcheck disable=SC2009
+  ps -efa|grep 'unicorn master'|grep -v grep|awk -F'/tmp/unicorn.' '{print $2}'|awk -F. '{print $1}'
+}
+
+case "$1" in
+  all)
+    for app in $(list_apps)
+    do
+      stop_app "$app"
+    done
+    exit $?
+    ;;
+  *)
+    stop_app "$1"
+    ;;
+esac
