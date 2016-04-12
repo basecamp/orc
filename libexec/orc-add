@@ -1,9 +1,20 @@
 #!/usr/bin/env bash
-# Usage: orc add /path/to/app
+# Usage: orc add /path/to/app [ alias ]
 # Summary: Links an app into orc
 # Help: Creates a link from the app into the orc directory
 
-if [ -d "$1" ]; then
+if [ $# -gt 1 ]; then
+  appname=$2
+elif [ -d "$1" ]; then
   appname=$(basename "$1")
+else
+  echo "Whoops! Not a real app"
+  exit
+fi
+
+if [ -L "$ORC_APPS/$appname" ]; then
+  echo "$appname already exists"
+  exit
+else
   ln -s "$1" "$ORC_APPS/$appname"
 fi
