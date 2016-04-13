@@ -16,5 +16,8 @@ if [ -L "$ORC_APPS/$appname" ]; then
   echo "$appname already exists"
   exit
 else
+  if [ ! -e $ORC_APPS ]; then
+    mkdir $ORC_APPS
+  fi
   ln -s "$1" "$ORC_APPS/$appname"
 fi
