@@ -38,6 +38,13 @@ it's content under $app_dir/public
     ~~~ sh
     $ orc web start
     ~~~
+5. Configure our DNS resolver to use our new dns server for the *.devel domain.
+   Here's how we'd do it on OS X:
+
+    ~~~ sh
+    $ echo nameserver 127.0.0.1 | \
+      sudo tee /etc/resolver/devel /etc/resolver/staging
+    ~~~
 
 ## Adding apps to orc
 
@@ -74,6 +81,12 @@ $ orc web logs
 # or
 $ orc web logs -f
 ~~~
+
+## General Architecture
+
+Our general request path will look like this:
+![Docker Dev Request Flow](share/orc/nginx/images/local-docker-dev-request-flow.png)
+
 
 ## Thanks
 Many thanks to @noahhl, @sstephenson, @qrush for their excellent support
