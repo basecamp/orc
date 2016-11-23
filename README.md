@@ -85,7 +85,7 @@ $ orc web logs -f
 ## General Architecture
 
 Our general request path will look like this:
-![Docker Dev Request Flow](share/orc/nginx/images/local-docker-dev-request-flow.svg)
+![Docker Dev Request Flow](https://cdn.rawgit.com/anoldguy/orc/master/share/orc/nginx/images/local-docker-dev-request-flow.svg)
 
 
 ## Thanks

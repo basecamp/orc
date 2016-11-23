@@ -26,7 +26,7 @@ Feel free to [read the comments](nginx.conf) in the configuration file and the
 we'll build the container after we've generated our SSL config.
 
 Our general request path will look like this:
-![Docker Dev Request Flow](images/local-docker-dev-request-flow.svg)
+![Docker Dev Request Flow](https://cdn.rawgit.com/anoldguy/orc/master/share/orc/nginx/images/local-docker-dev-request-flow.svg)
 
 ## The SSL
 
