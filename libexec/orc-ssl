@@ -1,0 +1,147 @@
+#!/usr/bin/env bash
+# Usage: orc ssl
+# Summary: Configures SSL cert
+# Help: Configures the SSL certificate with the current apps
+
+source $_ORC_ROOT/share/orc/common.sh
+
+# Provide orc completions
+if [ "$1" == "--complete" ]; then
+  echo "create reset regenerate-cert"
+  exit 0
+fi
+
+silently() {
+  $@ 2>&1 >/dev/null
+}
+
+silently_log() {
+  echo -n "$(date "+%Y-%m-%dT%H:%M:%S") " >> /tmp/orc_setup.log
+  $@ 2>&1 >> /tmp/orc_setup.log
+}
+
+create_ca() {
+  silently_log rsync -avz ${SHARE_DIR}/CA/ ${CA_DIR}/
+  cd ${CA_DIR}
+  # Generate random password
+  echo "${USER} $(date)"|shasum|awk '{print $1}' > ${CA_DIR}/.pass && chmod 400 ${CA_DIR}/.pass
+  local pass=$(cat ${CA_DIR}/.pass)
+
+  echo "*** Creating local CA"
+  $OPENSSL req -new -x509 -extensions v3_ca -keyout private/cakey.pem \
+    -subj "/O=orc-web-ca" -out cacert.pem -days 3650 \
+    -config ${CA_DIR}/openssl.cnf -passin pass:${pass} -passout pass:${pass}
+
+  echo "*** WARNING This will configure your OS to trust the CA cert you just created"
+  confirm
+  sudo security add-trusted-cert -d -r trustRoot -k /Library/Keychains/System.keychain cacert.pem
+}
+
+create_cert() {
+  silently_log rsync -avz ${SHARE_DIR}/ssl/ ${SSL_DIR}/
+  cd ${SSL_DIR}
+
+  echo "*** Creating our SSL certificate Request"
+  cp devel.csr.template devel.openssl.cnf
+  generate_dns_entries >> devel.openssl.cnf
+
+  silently_log openssl req -new -nodes -out devel.csr -keyout devel.key -config devel.openssl.cnf
+}
+
+sign_cert() {
+  cd ${CA_DIR}
+  local pass=$(cat ${CA_DIR}/.pass)
+
+  echo "*** Creating our SSL certificate with our CA"
+  silently_log openssl ca -batch -out ${SSL_DIR}/devel.pem -config ${CA_DIR}/openssl.cnf -passin pass:${pass} -infiles ${SSL_DIR}/devel.csr
+}
+
+confirm() {
+  read -p "Proceed? [N/y] " reply
+  echo
+  case $reply in
+  [nN])
+    exit 2
+    ;;
+  "")
+    exit 2
+    ;;
+  [yY])
+    ;;
+  *)
+    echo "Try again."
+    confirm
+    ;;
+  esac
+}
+
+resolve_link() {
+  $(type -p greadlink readlink | head -1) "$1"
+}
+
+generate_dns_entries() {
+  echo "DNS.1 = *.local.devel"
+  num=2
+
+  for app in $(ls -q $ORC_APPS)
+  do
+    echo "DNS.${num} = *.${app}.devel"
+    ((num++))
+    echo "DNS.${num} = ${app}.devel"
+    ((num++))
+  done
+}
+
+manage_ca() {
+  silently mkdir -p ${CA_DIR} ${SSL_DIR}
+  if [ ! -f $CA_DIR/private/cakey.pem ]; then
+    echo "No CA found, creating one"
+    create_ca
+    create_cert
+    sign_cert
+  elif [ ! -f $SSL_DIR/devel.csr ]; then
+    echo "No SSL cert found, creating one"
+    create_cert
+    sign_cert
+  elif [ ! -f $SSL_DIR/devel.pem ]; then
+    echo "Cert not signed, signing"
+    sign_cert
+  fi
+}
+
+
+SHARE_DIR="$_ORC_ROOT/share/orc"
+CA_DIR="$_ORC_ROOT/tmp/CA"
+SSL_DIR="$_ORC_ROOT/tmp/ssl"
+OPENSSL=$(which openssl)
+DOCKER=$(which docker)
+RSYNC=$(which rsync)
+
+command="$1"
+case "$command" in
+"create" )
+  manage_ca
+  ;;
+"reset" )
+
+  rm -rf ${CA_DIR} ${SSL_DIR}
+  manage_ca
+  ;;
+"regenerate-cert" )
+  rm -rf ${SSL_DIR}
+  manage_ca
+  exec orc-web regenerate-cert
+  ;;
+"sign-cert" )
+  sign_cert
+  ;;
+"create-cert" )
+  create_cert
+  ;;
+* )
+  manage_ca
+  ;;
+esac
+
+
+

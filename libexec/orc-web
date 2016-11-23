@@ -1,0 +1,82 @@
+#!/usr/bin/env bash
+# Usage: orc web
+# Summary: Configures the web container
+# Help: Sets up the web docker container with the provided ssl cert.
+
+source $_ORC_ROOT/share/orc/common.sh
+
+# Provide orc completions
+if [ "$1" == "--complete" ]; then
+  echo "build rebuild console logs restart start regenerate-cert"
+  exit 0
+fi
+
+build_image() {
+  # Ensure we've got the CA configured
+  orc-ssl create
+
+  cp $SHARE_DIR/nginx/nginx.conf $TMP_DIR/
+  cp $SHARE_DIR/nginx/Dockerfile $TMP_DIR/
+
+  cd $TMP_DIR
+  $DOCKER build -t orc-web .
+}
+
+run_images() {
+  $DOCKER run --name orc-web -d $(generate_volume_options) -p "80:80" -p "443:443" orc-web
+  $DOCKER run -d --name orc-dns -p 53:53/tcp -p 53:53/udp --cap-add=NET_ADMIN andyshinn/dnsmasq:latest -A /.devel/127.0.0.1
+}
+
+stop_containers() {
+  $DOCKER stop orc-web
+  $DOCKER stop orc-dns
+}
+
+rm_containers() {
+  $DOCKER rm orc-web
+  $DOCKER rm orc-dns
+}
+
+rm_image() {
+  $DOCKER rmi orc-web
+}
+
+generate_volume_options() {
+  for app in $(ls -q $ORC_APPS)
+  do
+    echo -n "-v $(resolve_link $ORC_APPS/${app}):/apps/${app} "
+  done
+}
+
+
+command="$1"
+case "$command" in
+"build" | "rebuild" )
+  build_image
+  ;;
+"console" )
+  $DOCKER run -it --rm $(generate_volume_options) orc-web /bin/sh
+  ;;
+"restart" | "start" )
+  silently_log stop_containers
+  silently_log rm_containers
+  silently_log run_images
+  ;;
+"logs" )
+  # Let's get tricky and allow them to use 'logs -f'
+  $DOCKER "$@" orc-web
+  ;;
+"reset" | "regenerate-cert" )
+  silently_log stop_containers
+  silently_log rm_containers
+  silently_log rm_image
+  silently_log build_image
+  silently_log run_images
+  ;;
+* )
+  silently_log $DOCKER stop orc-web
+  silently_log $DOCKER rm orc-web
+  silently_log build_image
+  silently_log run_images
+  ;;
+esac

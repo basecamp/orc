@@ -1,5 +1,2 @@
-Create a file in this directory named 'app_dir' with only the path to where 
-your apps will be linked. For example, if you want them linked under 
-/home/nathan/.apps, run this:
-
-echo "/home/nathan/.apps" > app_dir
+These are the source files used to generate the local CA and nginx docker
+instances.

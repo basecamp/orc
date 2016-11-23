@@ -82,49 +82,12 @@ Running `orc help` is your friend.
 
 ## Nginx and dnsmasq
 
-Well, it's not all rainbows and unicorns.
-
-### Nginx
-Here's an example config for a vanilla Ubuntu 14.04 nginx install:
-```
-server {
-  listen 80;
-  listen 127.0.0.1:80;
-  server_name ~^(.*\.)?(.*)\.(dev|test);
-  set $app_dir $2;
-  root /home/<your username>/.apps/$app_dir/public;
-
-
-  error_page 404 /404.html;
-  error_page 502 503 504 /500.html;
-
-  location / {
-    try_files $uri/index.html $uri $uri.html @unicorn;
-  }
-
-  location @unicorn {
-    default_type text/html;
-    proxy_pass http://unix:/tmp/unicorn.$app_dir.sock;
-    proxy_set_header X-Real-IP $remote_addr;
-    proxy_set_header Host $host;
-    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-    proxy_set_header X-Queue-Start "${msec}";
-  }
-}
-```
-### Dnsmasq
-
-Here's a command that will add the correct dnsmasq command, again
-on a vanilla Ubuntu 14.04 dnsmasq install:
-
-```
-sudo echo "address=/.dev/127.0.0.1" > /etc/dnsmasq.d/orc
-```
-To show these configs again:
-
+To handle nginx and dns, we use docker!  [Go install it](https://www.docker.com/products/overview#/install_the_platform).  To get them setup and running, it's pretty easy:
 ~~~ sh
-orc example
+orc web start
 ~~~
+This will create AND TRUST a local CA for local https development and start the
+docker containers.
 
 ## Thanks
 Many thanks to @noahhl, @sstephenson, @qrush for their excellent support

@@ -23,6 +23,15 @@ start_app(){
   fi
 }
 
+check_running(){
+  num_running=$(docker ps -f name=orc -q | wc -l)
+  if [ $num_running -lt 2 ]; then
+    orc-web restart
+  fi
+}
+
+check_running
+
 for app in "$@"
 do
   start_app "$app"
