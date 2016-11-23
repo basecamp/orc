@@ -1,12 +1,13 @@
 # Orc(hestrator)
 
-This is a script to emulate some of pow's functionality on linux.
+This is a script to emulate some of pow's functionality.
 
 For it all to work, it requires:
 
-1. A functional nginx installation
-2. A functional dnsmasq installation
-3. An app that runs on unicorns
+1. A functional nginx installation (provided)
+2. A functional dnsmasq installation (provided)
+3. An app that listens on `$app_dir/tmp/app.sock` or a static site that places
+it's content under $app_dir/public
 4. Some familiarity with the command line
 
 ## Installation
@@ -35,15 +36,11 @@ For it all to work, it requires:
 
 ## Adding apps to orc
 
-All you really need to do is link your apps under ~/.apps, but if you'd
-like a handy shortcut, we've got you covered:
-
 ~~~ sh
 orc add /path/to/my-cool-app
 ~~~
 
-Provided you have the nginx config and dnsmasq setup, you can now go to
-http://my-cool-app.dev/ and see your app running!
+You can now go to http://my-cool-app.dev/ and see your app running!
 
 ## Removing apps from orc
 
@@ -52,30 +49,8 @@ orc remove my-cool-app
 ~~~
 This will remove the link to the app and orc cannot manage it anymore.
 
-## Starting an app
-
-~~~ sh
-orc start my-cool-app
-~~~
-This will start your app!  For more details, look at `libexec/orc-start`.
-
-## Stopping an app
-~~~ sh
-orc stop my-cool-app
-~~~
-
-Easy.  Or alternatively, if you need all apps stopped:
-~~~ sh
-orc stop all
-~~~
-
-## Restarting an app
-~~~ sh
-orc restart my-cool-app
-~~~
-
-It's not doing anything fancy, just a stop/restart. Maybe I'll switch that
-up to a `kill -USR2` on the unicorn PID in the future.
+## Starting and Stopping Apps
+This is in flux. More details as this architecture emerges.
 
 ## Help
 Running `orc help` is your friend.
