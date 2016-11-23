@@ -33,6 +33,11 @@ it's content under $app_dir/public
     $ type orc
     #=> "orc is a aliased to _orc_wrapper"
     ~~~
+4. Start the web and dns processes:
+
+    ~~~ sh
+    $ orc web start
+    ~~~
 
 ## Adding apps to orc
 
@@ -62,7 +67,13 @@ To handle nginx and dns, we use docker!  [Go install it](https://www.docker.com/
 orc web start
 ~~~
 This will create AND TRUST a local CA for local https development and start the
-docker containers.
+docker containers.  If you want to watch the nginx logs, run:
+
+~~~ sh
+orc web logs
+# or
+orc web logs -f
+~~~
 
 ## Thanks
 Many thanks to @noahhl, @sstephenson, @qrush for their excellent support
