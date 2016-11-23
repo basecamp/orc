@@ -42,7 +42,7 @@ it's content under $app_dir/public
 ## Adding apps to orc
 
 ~~~ sh
-orc add /path/to/my-cool-app
+$ orc add /path/to/my-cool-app
 ~~~
 
 You can now go to http://my-cool-app.dev/ and see your app running!
@@ -50,7 +50,7 @@ You can now go to http://my-cool-app.dev/ and see your app running!
 ## Removing apps from orc
 
 ~~~ sh
-orc remove my-cool-app
+$ orc remove my-cool-app
 ~~~
 This will remove the link to the app and orc cannot manage it anymore.
 
@@ -64,15 +64,15 @@ Running `orc help` is your friend.
 
 To handle nginx and dns, we use docker!  [Go install it](https://www.docker.com/products/overview#/install_the_platform).  To get them setup and running, it's pretty easy:
 ~~~ sh
-orc web start
+$ orc web start
 ~~~
 This will create AND TRUST a local CA for local https development and start the
 docker containers.  If you want to watch the nginx logs, run:
 
 ~~~ sh
-orc web logs
+$ orc web logs
 # or
-orc web logs -f
+$ orc web logs -f
 ~~~
 
 ## Thanks
