@@ -102,4 +102,5 @@ Our general request path will look like this:
 
 ## Thanks
 Many thanks to @noahhl, @sstephenson, @qrush for their excellent support
-and encouragement!
+and encouragement!  Thanks to @ernie for the_setup which also influenced the
+design; more directly in some ways than others!
