@@ -5,10 +5,19 @@
 
 source $_ORC_ROOT/share/orc/common.sh
 
-echo "Building Docker Images and Installing Service"
+echo "Building Docker Images"
 orc-web build
-launchctl load $SHARE_DIR/orchestrator.plist
 
-echo "Configuring OS X to use DNSMasq for .devel lookups"
-echo nameserver 127.0.0.1 | \
-  sudo tee /etc/resolver/devel /etc/resolver/staging
+case $OSTYPE in
+  darwin*)
+    echo "Installing Service to run the docker containers"
+    launchctl load $SHARE_DIR/orchestrator.plist
+    echo "Configuring OS X to use DNSMasq for .devel lookups"
+    echo nameserver 127.0.0.1 | \
+      sudo tee /etc/resolver/devel /etc/resolver/staging
+  ;;
+  *)
+    echo "Install DNSMasq and add the following to your config:"
+    echo "\taddress=/.devel/127.0.0.1"
+  ;;
+esac

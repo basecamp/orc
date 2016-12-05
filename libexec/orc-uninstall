@@ -5,11 +5,18 @@
 
 source $_ORC_ROOT/share/orc/common.sh
 
-echo "Stopping and Removing service"
-launchctl unload $SHARE_DIR/orchestrator.plist
-
 echo "Stopping and Removing docker containers"
 orc-web remove
 
-echo "Removing custom DNS resolver"
-sudo rm /etc/resolver/devel /etc/resolver/staging
+case $OSTYPE in
+  darwin*)
+    echo "Stopping and Removing service"
+    launchctl unload $SHARE_DIR/orchestrator.plist
+    echo "Removing custom DNS resolver"
+    sudo rm /etc/resolver/devel /etc/resolver/staging
+  ;;
+  *)
+    echo "Remove the following from your DNSMasq config:"
+    echo "\taddress=/.devel/127.0.0.1"
+  ;;
+esac
