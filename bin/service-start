@@ -1,0 +1,28 @@
+#!/usr/bin/env bash
+
+# Check for docker running
+
+numchecks=0
+maxchecks=5
+
+function dockercheck(){
+  docker ps > /dev/null 2>&1
+}
+
+dockercheck
+result=$?
+while [ $result -gt 0 ]; do
+  sleep 10
+  dockercheck
+  result=$?
+  if [ $numchecks -ge $maxchecks ]; then
+    echo "Error: Couldn't connect to docker after $maxchecks tries!"
+    exit 1
+  else
+    ((numchecks++))
+  fi
+done
+
+source ~/.bashrc
+
+orc web restart

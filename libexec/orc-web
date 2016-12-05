@@ -7,7 +7,7 @@ source $_ORC_ROOT/share/orc/common.sh
 
 # Provide orc completions
 if [ "$1" == "--complete" ]; then
-  echo "build rebuild console logs restart start regenerate-cert"
+  echo "build rebuild console logs restart start regenerate-cert install uninstall"
   exit 0
 fi
 
@@ -65,6 +65,16 @@ case "$command" in
 "logs" )
   # Let's get tricky and allow them to use 'logs -f'
   $DOCKER "$@" orc-web
+  ;;
+"install" )
+  build_image
+  launchctl load $SHARE_DIR/orchestrator.plist
+  ;;
+"uninstall" )
+  launchctl unload $SHARE_DIR/orchestrator.plist
+  silently_log stop_containers
+  silently_log rm_containers
+  silently_log rm_image
   ;;
 "reset" | "regenerate-cert" )
   silently_log stop_containers
