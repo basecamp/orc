@@ -36,15 +36,27 @@ it's content under $app_dir/public
 4. Start the web and dns processes:
 
     ~~~ sh
-    $ orc web start
+    $ orc install
     ~~~
-5. Configure our DNS resolver to use our new dns server for the *.devel domain.
-   Here's how we'd do it on OS X:
+This will configure our DNS resolver to use our new dns server for the *.devel domain.
+   Here's how we're doing it on OS X:
 
     ~~~ sh
     $ echo nameserver 127.0.0.1 | \
       sudo tee /etc/resolver/devel /etc/resolver/staging
     ~~~
+For Linux, please install dnsmasq and add the following to your config:
+    ~~~ sh
+    address=/.devel/127.0.0.1
+    ~~~
+
+## Uninstalling
+
+~~~ sh
+$ orc uninstall
+~~~
+
+And remove the `eval "$(~/.orc/bin/orc init -)"` line from your `.bashrc`/`.bash_profile`/`.zshrc`.
 
 ## Adding apps to orc
 
