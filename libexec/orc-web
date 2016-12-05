@@ -66,22 +66,17 @@ case "$command" in
   # Let's get tricky and allow them to use 'logs -f'
   $DOCKER "$@" orc-web
   ;;
-"install" )
-  build_image
-  launchctl load $SHARE_DIR/orchestrator.plist
-  ;;
-"uninstall" )
-  launchctl unload $SHARE_DIR/orchestrator.plist
-  silently_log stop_containers
-  silently_log rm_containers
-  silently_log rm_image
-  ;;
 "reset" | "regenerate-cert" )
   silently_log stop_containers
   silently_log rm_containers
   silently_log rm_image
   silently_log build_image
   silently_log run_images
+  ;;
+"remove" )
+  silently_log stop_containers
+  silently_log rm_containers
+  silently_log rm_image
   ;;
 * )
   silently_log $DOCKER stop orc-web

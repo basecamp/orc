@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+# Usage: orc web
+# Summary: Adds Service, Docker containers, and DNS resolver
+# Help: Installss and configures items on your machine.
+
+source $_ORC_ROOT/share/orc/common.sh
+
+echo "Building Docker Images and Installing Service"
+orc-web build
+launchctl load $SHARE_DIR/orchestrator.plist
+
+echo "Configuring OS X to use DNSMasq for .devel lookups"
+echo nameserver 127.0.0.1 | \
+  sudo tee /etc/resolver/devel /etc/resolver/staging

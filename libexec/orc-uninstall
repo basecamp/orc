@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+# Usage: orc web
+# Summary: Removes Service, Docker containers, and DNS resolver
+# Help: Removes all configured items from your machine.
+
+source $_ORC_ROOT/share/orc/common.sh
+
+echo "Stopping and Removing service"
+launchctl unload $SHARE_DIR/orchestrator.plist
+
+echo "Stopping and Removing docker containers"
+orc-web remove
+
+echo "Removing custom DNS resolver"
+sudo rm /etc/resolver/devel /etc/resolver/staging
