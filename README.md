@@ -15,7 +15,7 @@ it's content under $app_dir/public
 1. Check out orc into `~/.orc`.
 
     ~~~ sh
-    $ git clone https://github.com/anoldguy/orc.git ~/.orc
+    $ git clone https://github.com/basecamp/orc.git ~/.orc
     ~~~
 
 2. Add `orc init` to your shell to enable shims and autocompletion.
