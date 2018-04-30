@@ -17,24 +17,22 @@ build_image() {
 
   cp $SHARE_DIR/nginx/nginx.conf $TMP_DIR/
   cp $SHARE_DIR/nginx/Dockerfile $TMP_DIR/
+  cp $SHARE_DIR/nginx/pow.lua    $TMP_DIR/
 
   cd $TMP_DIR
   $DOCKER build -t orc-web .
 }
 
 run_images() {
-  $DOCKER run --name orc-web -d $(generate_volume_options) -p "80:80" -p "443:443" orc-web
-  $DOCKER run -d --name orc-dns -p 53:53/tcp -p 53:53/udp --cap-add=NET_ADMIN andyshinn/dnsmasq:latest -A /.devel/127.0.0.1
+  $DOCKER run --name orc-web -d $(generate_volume_options) --net=host orc-web
 }
 
 stop_containers() {
   $DOCKER stop orc-web
-  $DOCKER stop orc-dns
 }
 
 rm_containers() {
   $DOCKER rm orc-web
-  $DOCKER rm orc-dns
 }
 
 rm_image() {
@@ -42,10 +40,7 @@ rm_image() {
 }
 
 generate_volume_options() {
-  for app in $(ls -q $ORC_APPS)
-  do
-    echo -n "-v $(resolve_link $ORC_APPS/${app}):/apps/${app} "
-  done
+  echo -n "-v $ORC_APPS:/pow "
 }
 
 

@@ -22,7 +22,7 @@ abs_dirname() {
 libexec_path="$(abs_dirname "$0")"
 export _ORC_ROOT="$(abs_dirname "$libexec_path")"
 export PATH="${libexec_path}:$PATH"
-export ORC_APPS="$HOME/.apps"
+export ORC_APPS="$HOME/.pow"
 
 command="$1"
 case "$command" in

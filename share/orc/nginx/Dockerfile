@@ -1,9 +1,7 @@
-# We're going to use a really small image, since we're not compiling anything
-# in this image
-FROM nginx:alpine
-
-# Replace the standard nginx.conf with our custom version
-COPY nginx.conf /etc/nginx/nginx.conf
+FROM openresty/openresty:alpine
+ADD nginx.conf /usr/local/openresty/nginx/conf/nginx.conf
+ADD pow.lua /etc/nginx/pow.lua
+RUN mkdir /pow
 
 # Copy the SSL configuration into place
 COPY ssl /etc/nginx/ssl
